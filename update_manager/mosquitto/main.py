@@ -11,11 +11,7 @@ pbkdf2_iterations = 100000
 digest_alg = 'sha256'
 
 
-def add_user(username, password, isSuperuser=0):
-
-    if not isinstance(isSuperuser, int):
-        return
-
+def generate_hash(password):
     salt = base64.b64encode(os.urandom(20))
 
     pbkdf2_hash = hashlib.pbkdf2_hmac(
@@ -31,6 +27,15 @@ def add_user(username, password, isSuperuser=0):
         salt.decode("utf-8"),
         base64.b64encode(pbkdf2_hash).decode("utf-8")
     )
+    return complete_hash
+
+
+def add_user(username, password, isSuperuser=0):
+
+    if not isinstance(isSuperuser, int):
+        return
+
+    complete_hash = generate_hash(password)
 
     clean_username = ''.join(e for e in username.lower() if e.isalnum())
 
