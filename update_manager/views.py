@@ -9,10 +9,9 @@ from django.shortcuts import redirect, render
 
 from NeutronServer.forms import PublishNewVersionForm
 from update_manager.models import NeutronApplication, VersionControl
+from update_manager.mosquitto import main
 from update_manager.system_scripts.application_version import \
     install_new_version
-
-from update_manager.mosquitto import main
 
 
 # @login_required(redirect_field_name='', login_url='login/')
