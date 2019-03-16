@@ -1,0 +1,105 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8" />
+        <title>Login - Neutron Systems</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+
+        <!-- App css -->
+        <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'assets/css/icons.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css" />
+
+        <script src="{% static 'assets/js/modernizr.min.js' %} "></script>
+
+    </head>
+
+    <body>
+
+        <div class="account-pages"></div>
+        <div class="clearfix"></div>
+        <div class="wrapper-page">
+            <!-- <div class="text-center">
+                <a href="index.html" class="logo"><span>Admin<span>to</span></span></a>
+            </div> -->
+        	<div class="m-t-40 card-box">
+                <div class="text-center">
+                    <h4 class="text-uppercase font-bold mb-0">Sign In</h4>
+                    <!-- <h5 class="text-muted mt-0 font-600">Neutron Systems</h5> -->
+                </div>
+                <div class="p-20">
+                    <form class="form-horizontal m-t-15" action="." method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <label for="id_username" class=" control-label"></label>
+                                {{ form.username }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <label for="id_password" class=" control-label"></label>
+                                {{ form.password }}
+                            </div>
+                        </div>
+
+                        <div class="form-group ">
+                            <div class="col-xs-12">
+                                <div class="checkbox checkbox-custom">
+                                    <input id="checkbox-signup" type="checkbox">
+                                    <label for="checkbox-signup">
+                                        Remember me
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group text-center m-t-30">
+                            <div class="col-xs-12">
+                                <button class="btn btn-custom btn-bordred btn-block waves-effect waves-light" type="submit">Log In</button>
+                            </div>
+                        </div>
+
+                        <!-- <div class="form-group m-t-30 mb-0">
+                            <div class="col-sm-12">
+                                <a href="page-recoverpw.html" class="text-muted"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
+                            </div>
+                        </div> -->
+                        {% if form.errors %}
+                        <center><p class="validation-summary-errors" style="color: red">Wrong Username or Password</p></center>
+                        {% endif %}
+                    </form>
+
+                </div>
+            </div>
+            <!-- end card-box-->
+
+            <!-- <div class="row">
+                <div class="col-sm-12 text-center">
+                    <p class="text-muted">Don't have an account? <a href="page-register.html" class="text-primary m-l-5"><b>Sign Up</b></a></p>
+                </div>
+            </div> -->
+            
+        </div>
+        <!-- end wrapper page -->
+
+        <!-- jQuery  -->
+        <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+        <script src="{% static 'assets/js/popper.min.js' %}"></script>
+        <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/waves.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.slimscroll.js' %}"></script>
+
+        <!-- App js -->
+        <script src="{% static 'assets/js/jquery.core.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.app.js' %}"></script>
+	
+	</body>
+</html>

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Publish New Version{% endblock %}
+
+{% block contents %}
+{% load staticfiles %}
+
+<style>
+    select:invalid {
+        color: gray;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group pull-right m-t-20">
+                <!-- <button type="button" class="btn btn-custom dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">Settings </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                    <a href="javascript:void(0);" class="dropdown-item">Another action</a>
+                    <a href="javascript:void(0);" class="dropdown-item">Something else</a>
+                    <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
+                </div> -->
+            </div>
+            <h4 class="page-title">Version Control -> New</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-box">
+                <!-- <h4 class="m-t-0 header-title">Form row</h4>
+                <p class="text-muted m-b-30 font-13">
+                    You may also swap <code class="highlighter-rouge">.row</code> for <code class="highlighter-rouge">.form-row</code>, a variation of our standard grid row that overrides the default column gutters for tighter and more compact layouts.
+                </p> -->
+
+                <form id="infoForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="inputApp" class="col-form-label">Application</label>
+                        <!-- <select name="application" id="inputApp" class="form-control" required>
+                            <option value="" disabled selected>Select the application</option>
+                        </select> -->
+                        {{ form.application }}
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAppBranch" class="col-form-label">Branch</label>
+                        <!-- <select name="branch" id="inputAppBranch" class="form-control" required>
+                            <option value="" disabled selected>Select a branch</option>
+                        </select> -->
+                        {{ form.branch }}
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAppComponent" class="col-form-label">Component</label>
+                        <!-- <select name="component" id="inputAppComponent" class="form-control" required>
+                            <option value="" disabled selected>Select the application component</option>
+                        </select> -->
+                        {{ form.component }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputVersionNumber" class="col-form-label">Version Number</label>
+                        <p class="text-muted m-b-5 font-13">
+                            The version number must be bigger than the last one. The devices will not update otherwise.
+                        </p>
+                        <!-- <input name="version_number" id="inputVersionNumber" type="text" class="form-control"
+                            autocomplete="on" data-mask="99.99.99" placeholder="[MAJOR].[MINOR].[PATCH]"> -->
+                        {{ form.version_number }}
+                    </div>
+                    <div class="form-group">
+                        <label for="inputChangelog" class="col-form-label">Changelog</label>
+                        <!-- <textarea name="changelog" id="inputChangelog" class="form-control" required></textarea> -->
+                        {{ form.changelog}}
+                    </div>
+                    <div class="form-group">
+                        <label for="inputUpdatePackage" class="col-form-label">Update Package</label>
+                        <!-- <p id="lableUpdatePackage">Click to select file</p> -->
+                        {{ form.update_package }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.is_push_update }}
+                        <label for="inputIsPushUpdate">Push This Update</label>
+                    </div>
+                    <button type="submit" id="submitForms" class="btn btn-primary">Publish Update</button>
+                </form>
+                <progress id="progressUpdatePackage" style="width: 100%; height: 15px; margin-top: 10px;" hidden></progress>
+                <center><div id="responseMessage"></div></center>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery  -->
+<script src="{% static 'assets/plugins/jquery-inputmask/jquery.mask.min.js' %}" type="text/javascript"></script>
+
+<script src="{% static 'assets/js/in_html/version_control/new_version.js' %}"></script>
+
+{% endblock %}
