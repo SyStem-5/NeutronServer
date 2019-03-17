@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from NeutronServer.forms import PublishNewVersionForm
+from update_manager.decorators import mqtt_auth
 from update_manager.models import NeutronApplication, VersionControl
 from update_manager.mosquitto import main
 from update_manager.system_scripts.application_version import \
@@ -44,12 +45,14 @@ def version_control_new(request):
         return render(request, template, {'form': PublishNewVersionForm(), 'version_control': VersionControl.objects.all()})
     elif request.method == 'POST':
         form = PublishNewVersionForm(request.POST, request.FILES)
-        #print(request.FILES)
+        # print(request.FILES)
         if form.is_valid():
             return JsonResponse(install_new_version(form.cleaned_data, request.FILES['update_package']))
         else:
             return JsonResponse({'result': False, 'msg': str(form.errors)})
 
+
+@mqtt_auth
 def api_version_manifest(request):
     print(request.GET)
     return JsonResponse({"message": "Hiii!"})
