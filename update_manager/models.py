@@ -96,11 +96,11 @@ def create_application_setup(sender, instance, **kwargs):
     )
 
     versions_field = {}
-    for component in instance.get_components_clean():
-        versions_field[component] = {}
+    for branch in instance.get_branches_clean():
+        versions_field[branch] = {}
 
-        for branch in instance.get_branches_clean():
-            versions_field[component][branch] = {"version":"0.0.0", "checksum":""}
+        for component in instance.get_components_clean():
+            versions_field[branch][component] = [{"version":"0.0.0", "checksum":"", "chainlink": False}]
 
     VersionControl.objects.get_or_create(application=instance, versions=versions_field)
 
