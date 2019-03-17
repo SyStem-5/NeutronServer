@@ -11,8 +11,12 @@ pbkdf2_iterations = 100000
 digest_alg = 'sha256'
 
 
-def generate_hash(password):
-    salt = base64.b64encode(os.urandom(20))
+def generate_hash(password, salt=''):
+
+    if not salt:
+        salt = base64.b64encode(os.urandom(20))
+    else:
+        salt = base64.b64encode(salt)
 
     pbkdf2_hash = hashlib.pbkdf2_hmac(
         digest_alg,
