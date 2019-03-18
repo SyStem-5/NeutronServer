@@ -33,7 +33,7 @@ def users(request):
 @permission_required('superuser', login_url='login/')
 def version_control(request):
     #main.add_user('testuser', 'jahahaha')
-    template = 'version_control/version_control.html'
+    template = 'version_control/dashboard.html'
     return render(request, template, {'version_control': VersionControl.objects.all()})
 
 
