@@ -35,54 +35,10 @@
                                 <th>#</th>
                                 <th>Application Name</th>
                                 <th>Last Update</th>
-                                <th></th>
+                                <!-- <th></th> -->
                             </tr>
                         </thead>
-                        <tbody>
-                            {% for app in version_control %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ app.application.name }}</td>
-                                    <td>{{ app.last_updated }}</td>
-                                    <td style="text-align:right" data-toggle="collapse" data-target="#accordion{{ app.id }}" class="clickable">
-                                        <button class="btn mdi mdi mdi-details"></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" nowrap>
-                                        <div id="accordion{{ app.id }}" class="collapse">
-                                            <div class="grid-container" style="grid-template-columns:auto auto auto auto; display: grid; grid-gap: 1em;">
-                                                {% for component, value in app.versions.items %}
-                                                <div class="grid-item">
-                                                    <center>
-                                                        {{ component }}
-                                                    </center>
-
-                                                    <center>
-                                                        {% for branch, value2 in value.items %}
-                                                            {{ branch }} -> 
-                                                            {% for version, value3 in value2.items %}
-                                                                {% if value3 != "0.0.0" %}
-                                                                    V{{ value3 }}
-                                                                {% else %}
-                                                                    No published version
-                                                                {% endif %}
-                                                                <br>
-                                                            {% endfor %}
-                                                        {% endfor %}
-                                                    </center>
-                                                    <br>
-                                                </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <li>No registered applications found.</li>
-                                <br>
-                            {% endfor %}
-                        </tbody>
+                        <tbody id="app_table"></tbody>
                     </table>
                 </div>
 
@@ -90,5 +46,7 @@
         </div>
     </div>
 </div>
+
+<script src="{% static 'assets/js/in_html/version_control/dashboard.js' %}"></script>
 
 {% endblock %}
