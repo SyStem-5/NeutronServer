@@ -27,13 +27,13 @@ def mqtt_auth(function):
         try:
             user = MQTTUsers.objects.get(username=clean_username)
         except:
-            return JsonResponse({'message': 'Error: Unknown user.'})
+            return JsonResponse({'message': 'Error: Authentication failed.'})
 
         proposed_user_salt = base64.b64decode(
             user.password.split('$')[3].encode('utf-8'))
 
         if generate_hash(req['password'], proposed_user_salt) != user.password:
-            return JsonResponse({'message': 'Error: Unknown user.'})
+            return JsonResponse({'message': 'Error: Authentication failed.'})
 
         # print('-'*5+'MQTT'+'-'*5)
         # print('User authenticated.')
