@@ -20,20 +20,20 @@ def mqtt_auth(function):
 
         for field in required_fields:
             if field not in received_fields:
-                return JsonResponse({'message': 'Error: missing field/s.'})
+                return JsonResponse({'message': 'Error: missing field/s.', 'code': 400})
 
         clean_username = ''.join(e for e in req['username'].lower() if e.isalnum())
 
         try:
             user = MQTTUsers.objects.get(username=clean_username)
         except:
-            return JsonResponse({'message': 'Error: Authentication failed.'})
+            return JsonResponse({'message': 'Error: Authentication failed.', 'code': 403})
 
         proposed_user_salt = base64.b64decode(
             user.password.split('$')[3].encode('utf-8'))
 
         if generate_hash(req['password'], proposed_user_salt) != user.password:
-            return JsonResponse({'message': 'Error: Authentication failed.'})
+            return JsonResponse({'message': 'Error: Authentication failed.', 'code': 403})
 
         # print('-'*5+'MQTT'+'-'*5)
         # print('User authenticated.')
