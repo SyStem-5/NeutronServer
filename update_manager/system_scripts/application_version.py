@@ -35,10 +35,10 @@ def install_new_version(form_data, update_package):
     for application in version_control_table:
         if application['application_id'] == application_id:
             #print("Found app")
-            if component_name in application['versions']:
-                #print("Found component")
-                if branch in application['versions'][component_name]:
-                    #print("Found branch")
+            if branch in application['versions']:
+                #print("Found branch")
+                if component_name in application['versions'][branch]:
+                    #print("Found component")
 
                     proposed_version = proposed_version.split('.')
                     if len(proposed_version) != 3:
@@ -50,7 +50,7 @@ def install_new_version(form_data, update_package):
                     except:
                         return {'result': False, 'msg': 'Invalid version number.'}
 
-                    current_version = application['versions'][component_name][branch]['version'].split(
+                    current_version = application['versions'][branch][component_name][0]['version'].split(
                         '.')
                     try:
                         major_v_num_c = int(current_version[0])
@@ -85,7 +85,7 @@ def install_new_version(form_data, update_package):
                         str(NeutronApplication.objects.get(pk=application_id)))
 
                     # Version number is valid, save the file to the correct location
-                    save_path = 'update_packages/'+application_name+'/'+branch + \
+                    save_path = 'update_packages/'+application_name+'/'+branch+ \
                         '/'+component_name+'/' + form_data["version_number"]
                     try:
                         with open(save_path + '.zip', 'wb+') as destination:
@@ -104,12 +104,12 @@ def install_new_version(form_data, update_package):
                         return {'result': False, 'msg': 'Server error: Could not save update package changelog.'}
 
                     # Then update the version number in the database
-                    application['versions'][component_name][branch]['version'] = form_data["version_number"]
+                    application['versions'][branch][component_name][0]['version'] = form_data["version_number"]
                     # Update the md5 file check
-                    application['versions'][component_name][branch]['checksum'] = sha256sum(
+                    application['versions'][branch][component_name][0]['checksum'] = sha256sum(
                         save_path+'.zip')
 
-                    version_control = VersionControl.objects.get(pk=application_id)
+                    version_control = VersionControl.objects.get(application_id=application_id)
                     version_control.versions = application['versions']
                     version_control.save()
 
