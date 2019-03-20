@@ -30,32 +30,18 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card-box">
-                <!-- <h4 class="m-t-0 header-title">Form row</h4>
-                <p class="text-muted m-b-30 font-13">
-                    You may also swap <code class="highlighter-rouge">.row</code> for <code class="highlighter-rouge">.form-row</code>, a variation of our standard grid row that overrides the default column gutters for tighter and more compact layouts.
-                </p> -->
-
                 <form id="infoForm">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="inputApp" class="col-form-label">Application</label>
-                        <!-- <select name="application" id="inputApp" class="form-control" required>
-                            <option value="" disabled selected>Select the application</option>
-                        </select> -->
                         {{ form.application }}
                     </div>
                     <div class="form-group">
                         <label for="inputAppBranch" class="col-form-label">Branch</label>
-                        <!-- <select name="branch" id="inputAppBranch" class="form-control" required>
-                            <option value="" disabled selected>Select a branch</option>
-                        </select> -->
                         {{ form.branch }}
                     </div>
                     <div class="form-group">
                         <label for="inputAppComponent" class="col-form-label">Component</label>
-                        <!-- <select name="component" id="inputAppComponent" class="form-control" required>
-                            <option value="" disabled selected>Select the application component</option>
-                        </select> -->
                         {{ form.component }}
                     </div>
 
@@ -64,18 +50,14 @@
                         <p class="text-muted m-b-5 font-13">
                             The version number must be bigger than the last one. The devices will not update otherwise.
                         </p>
-                        <!-- <input name="version_number" id="inputVersionNumber" type="text" class="form-control"
-                            autocomplete="on" data-mask="99.99.99" placeholder="[MAJOR].[MINOR].[PATCH]"> -->
                         {{ form.version_number }}
                     </div>
                     <div class="form-group">
                         <label for="inputChangelog" class="col-form-label">Changelog</label>
-                        <!-- <textarea name="changelog" id="inputChangelog" class="form-control" required></textarea> -->
                         {{ form.changelog}}
                     </div>
                     <div class="form-group">
                         <label for="inputUpdatePackage" class="col-form-label">Update Package</label>
-                        <!-- <p id="lableUpdatePackage">Click to select file</p> -->
                         {{ form.update_package }}
                     </div>
                     <div class="form-group" 
