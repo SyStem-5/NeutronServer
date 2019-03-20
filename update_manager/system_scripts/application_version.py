@@ -50,8 +50,13 @@ def install_new_version(form_data, update_package):
                     except:
                         return {'result': False, 'msg': 'Invalid version number.'}
 
-                    current_version = application['versions'][branch][component_name][0]['version'].split(
-                        '.')
+                    # If the version array is empty, we use the start version of '0.0.0' to compare against
+                    try:
+                        current_version = application['versions'][branch][component_name][-1]['version'].split(
+                            '.')
+                    except:
+                        current_version = '0.0.0'.split('.')
+
                     try:
                         major_v_num_c = int(current_version[0])
                         minor_v_num_c = int(current_version[1])
@@ -103,11 +108,14 @@ def install_new_version(form_data, update_package):
                     except:
                         return {'result': False, 'msg': 'Server error: Could not save update package changelog.'}
 
+                    new_version = {
+                        'version': form_data["version_number"],
+                        'checksum': sha256sum(save_path+'.zip'),
+                        'chainlink': False
+                    }
+
                     # Then update the version number in the database
-                    application['versions'][branch][component_name][0]['version'] = form_data["version_number"]
-                    # Update the md5 file check
-                    application['versions'][branch][component_name][0]['checksum'] = sha256sum(
-                        save_path+'.zip')
+                    application['versions'][branch][component_name].append(new_version)
 
                     version_control = VersionControl.objects.get(application_id=application_id)
                     version_control.versions = application['versions']
