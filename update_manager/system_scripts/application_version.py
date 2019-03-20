@@ -116,9 +116,9 @@ def install_new_version(form_data, update_package):
                     return {'result': True, 'msg': 'New version successfuly published.'}
                 else:
                     #print("Branch not found")
-                    return {'result': False, 'msg': 'Branch does not exist.'}
+                    return {'result': False, 'msg': 'Component does not exist.'}
             else:
                 #print("Component not found")
-                return {'result': False, 'msg': 'Component does not exist.'}
+                return {'result': False, 'msg': 'Branch does not exist.'}
 
     return {'result': False, 'msg': 'Could not find the application specified.'}
