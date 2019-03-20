@@ -69,3 +69,9 @@ class PublishNewVersionForm(forms.Form):
                                             'id': 'inputIsPushUpdate',
                                             'type': 'checkbox'
                                         }))
+    is_chainlink = forms.BooleanField(required=False,
+                                        widget=forms.CheckboxInput({
+                                            'name': 'is_chainlink',
+                                            'id': 'inputIsChainLink',
+                                            'type': 'checkbox'
+                                        }))
