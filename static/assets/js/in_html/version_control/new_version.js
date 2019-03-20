@@ -96,7 +96,15 @@ function update_version_number_field() {
     if ($("#inputAppComponent").val() != null) {
         selected_component = $("#inputAppComponent").val().toLowerCase();
 
-        version = selected_vc["versions"][selected_branch][selected_component][0]["version"];
+        try {
+            version = selected_vc["versions"][selected_branch][selected_component]
+                [selected_vc["versions"][selected_branch][selected_component].length-1]
+                ["version"];
+        } catch (error) {
+            console.log("Couldn't find any version number for this component. Using '0.0.0'.");
+            version = "0.0.0"
+        }
+        
 
         $("#inputVersionNumber").val(version);
     }
