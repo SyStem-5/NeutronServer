@@ -2,6 +2,8 @@
 # pylint: disable=E1101
 import hashlib
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from update_manager.models import NeutronApplication, VersionControl
 
 
@@ -52,8 +54,7 @@ def install_new_version(form_data, update_package):
 
                     # If the version array is empty, we use the start version of '0.0.0' to compare against
                     try:
-                        current_version = application['versions'][branch][component_name][-1]['version'].split(
-                            '.')
+                        current_version = application['versions'][branch][component_name][-1]['version'].split('.')
                     except:
                         current_version = '0.0.0'.split('.')
 
@@ -90,34 +91,45 @@ def install_new_version(form_data, update_package):
                         str(NeutronApplication.objects.get(pk=application_id)))
 
                     # Version number is valid, save the file to the correct location
-                    save_path = 'update_packages/'+application_name+'/'+branch+ \
-                        '/'+component_name+'/' + form_data["version_number"]
-                    try:
-                        with open(save_path + '.zip', 'wb+') as destination:
-                            for chunk in update_package.chunks():
-                                destination.write(chunk)
-                    except:
-                        return {'result': False, 'msg': 'Server error: Could not save update package.'}
-
-                    # Create a changelog for this version
                     # Name: ex. 1.2.0_changelog.txt
                     # Save to same folder as the update package
-                    try:
-                        with open(save_path + '_changelog.txt', 'w+') as destination:
-                            destination.write(form_data["changelog"])
-                    except:
-                        return {'result': False, 'msg': 'Server error: Could not save update package changelog.'}
+                    save_path = 'update_packages/'+application_name+'/'+branch + \
+                        '/'+component_name+'/' + form_data["version_number"]
 
+                    version_control = {}
+
+                    # Try to get the application version control from the database
+                    try:
+                        version_control = VersionControl.objects.get(application_id=application_id)
+                    except (ObjectDoesNotExist):
+                        return {'result': False, 'msg': 'Server error: Could not find version control data for the selected app.'}
+                    else:
+                        # If we get the version control, try to save the changelog
+                        try:
+                            with open(save_path + '_changelog.txt', 'w+') as destination:
+                                destination.write(form_data["changelog"])
+                        except:
+                            return {'result': False, 'msg': 'Server error: Could not save update changelog.'}
+                        else:
+                            # We saved the changelog, save the update package
+                            try:
+                                with open(save_path + '.zip', 'wb+') as destination:
+                                    for chunk in update_package.chunks():
+                                        destination.write(chunk)
+                            except:
+                                return {'result': False, 'msg': 'Server error: Could not save update package.'}
+
+                    # The file saving was successful
+                    # Generate the hash and save it to the database
                     new_version = {
                         'version': form_data["version_number"],
                         'checksum': sha256sum(save_path+'.zip'),
                         'chainlink': False
                     }
-
                     # Then update the version number in the database
-                    application['versions'][branch][component_name].append(new_version)
+                    application['versions'][branch][component_name].append(
+                        new_version)
 
-                    version_control = VersionControl.objects.get(application_id=application_id)
                     version_control.versions = application['versions']
                     version_control.save()
 
