@@ -96,7 +96,7 @@ function update_version_number_field() {
     if ($("#inputAppComponent").val() != null) {
         selected_component = $("#inputAppComponent").val().toLowerCase();
 
-        version = selected_vc["versions"][selected_component][selected_branch]["version"];
+        version = selected_vc["versions"][selected_branch][selected_component][0]["version"];
 
         $("#inputVersionNumber").val(version);
     }
