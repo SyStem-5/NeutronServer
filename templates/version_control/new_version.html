@@ -78,7 +78,13 @@
                         <!-- <p id="lableUpdatePackage">Click to select file</p> -->
                         {{ form.update_package }}
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" 
+                        title="If this update is marked as a chainlink, people upgrading from an old version to the latest one will have to download this version first.">
+                        {{ form.is_chainlink }}
+                        <label for="inputIsChainLink">This update is a ChainLink</label>
+                    </div>
+                    <div class="form-group"
+                        title="If this is selected, this update will be announced to every updater that has permission and will be urged to download it as soon as possible.">
                         {{ form.is_push_update }}
                         <label for="inputIsPushUpdate">Push This Update</label>
                     </div>
