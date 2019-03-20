@@ -124,7 +124,7 @@ def install_new_version(form_data, update_package):
                     new_version = {
                         'version': form_data["version_number"],
                         'checksum': sha256sum(save_path+'.zip'),
-                        'chainlink': False
+                        'chainlink': form_data["is_chainlink"]
                     }
                     # Then update the version number in the database
                     application['versions'][branch][component_name].append(
