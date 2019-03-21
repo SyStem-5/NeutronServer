@@ -11,6 +11,13 @@ pbkdf2_iterations = 100000
 digest_alg = 'sha256'
 
 
+def clean_string(string):
+    '''
+    The returned string will contain only alpha-numeric characters including '_'
+    '''
+    return ''.join(e for e in string.lower() if e.isalnum() or e == '_')
+
+
 def generate_hash(password, salt=''):
 
     if not salt:
@@ -41,7 +48,7 @@ def add_user(username, password, isSuperuser=0):
 
     complete_hash = generate_hash(password)
 
-    clean_username = ''.join(e for e in username.lower() if e.isalnum())
+    clean_username = clean_string(username)
 
     MQTTUsers.objects.create(
         username=clean_username,
