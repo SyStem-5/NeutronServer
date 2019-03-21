@@ -7,7 +7,7 @@ from functools import wraps
 from django.http import JsonResponse
 
 from update_manager.models import MQTTUsers
-from update_manager.mosquitto.main import generate_hash
+from update_manager.mosquitto.main import generate_hash, clean_string
 
 
 def mqtt_auth(function):
@@ -22,7 +22,7 @@ def mqtt_auth(function):
             if field not in received_fields:
                 return JsonResponse({'message': 'Error: missing field/s.', 'code': 400})
 
-        clean_username = ''.join(e for e in req['username'].lower() if e.isalnum())
+        clean_username = clean_string(req['username'])
 
         try:
             user = MQTTUsers.objects.get(username=clean_username)
