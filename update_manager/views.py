@@ -11,7 +11,7 @@ from NeutronServer.forms import PublishNewVersionForm
 from update_manager.decorators import mqtt_auth
 from update_manager.models import NeutronApplication, VersionControl
 from update_manager.mosquitto import main
-from update_manager.system_scripts.application_version import \
+from update_manager.system_scripts.version_control import \
     install_new_version
 
 
