@@ -54,10 +54,11 @@ function populate_applist() {
 
             const component_label = $("<div style='text-align:center'></div>");
             Object.keys(app_ver_data.versions[branch]).forEach((component) => {
-                if (jQuery.isEmptyObject(app_ver_data.versions[branch][component]) || app_ver_data.versions[branch][component][0].version === '0.0.0') {
+                const curr_component = app_ver_data.versions[branch][component];
+                if (jQuery.isEmptyObject(curr_component)) {
                     component_label.append(`${component} -> No version published<br>`);
                 } else {
-                    component_label.append(`${component} -> V${app_ver_data.versions[branch][component][0].version}<br>`);
+                    component_label.append(`${component} -> V${curr_component[curr_component.length - 1].version}<br>`);
                 }
             });
 
