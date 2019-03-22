@@ -59,6 +59,42 @@ CHANNEL_LAYERS = {
     },
 }
 
+if use_secrets:
+    log_level = 'WARNING'
+else:
+    log_level = 'DEBUG'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} [{asctime}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django.server': {
+            'handlers': ['console'],
+            'level': log_level,
+            'propagate': False,
+        },
+    },
+}
+
 MIDDLEWARE = []
 
 if use_secrets:
