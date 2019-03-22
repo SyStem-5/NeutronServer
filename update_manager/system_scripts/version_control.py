@@ -23,69 +23,82 @@ def sha256sum(filename):
             h.update(mv[:n])
     return h.hexdigest()
 
+def validate_version(current_version, proposed_version):
+    proposed_version = proposed_version.split('.')
+
+    if len(proposed_version) != 3:
+        return {'result': False, 'msg': 'Invalid version number.'}
+    try:
+        major_v_num_p = int(proposed_version[0])
+        minor_v_num_p = int(proposed_version[1])
+        patch_v_num_p = int(proposed_version[2])
+    except:
+        return {'result': False, 'msg': 'Invalid version number.'}
+
+    current_version = current_version.split('.')
+
+    try:
+        major_v_num_c = int(current_version[0])
+        minor_v_num_c = int(current_version[1])
+        patch_v_num_c = int(current_version[2])
+    except:
+        return {'result': False, 'msg': 'Server error: Saved version number is invalid.'}
+
+    if major_v_num_p > major_v_num_c:
+        # Continue with file save
+        pass
+    elif major_v_num_p == major_v_num_c:
+        if minor_v_num_p > minor_v_num_c:
+            # Continue with file save
+            pass
+        elif minor_v_num_p == minor_v_num_c:
+            if patch_v_num_p > patch_v_num_c:
+                # Continue with file save
+                pass
+            else:
+                # No need for the same/lower version to be uploaded
+                return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
+        else:
+            return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
+    else:
+        return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
+    
+    return {'result': True}
+
 
 def install_new_version(form_data, update_package):
     version_control_table = list(VersionControl.objects.values())
     # print(version_control_table)
 
     # This is safe because we validated this as a number before
-    application_id = int(form_data['application'])
-    component_name = clean_string(form_data['component'])
-    branch = clean_string(form_data['branch'])
+    application_id = int(form_data["application"])
+    component_name = clean_string(form_data["component"])
+    branch = clean_string(form_data["branch"])
     try:
-        proposed_version = str(form_data['version_number'])
+        proposed_version = str(form_data["version_number"])
     except:
         return {'result': False, 'msg': 'Invalid version number.'}
 
     for application in version_control_table:
-        if application['application_id'] == application_id:
+        if application["application_id"] == application_id:
             #print("Found app")
-            if branch in application['versions']:
+            if branch in application["versions"]:
                 #print("Found branch")
-                if component_name in application['versions'][branch]:
+                if component_name in application["versions"][branch]:
                     #print("Found component")
-
-                    proposed_version = proposed_version.split('.')
-                    if len(proposed_version) != 3:
-                        return {'result': False, 'msg': 'Invalid version number.'}
-                    try:
-                        major_v_num_p = int(proposed_version[0])
-                        minor_v_num_p = int(proposed_version[1])
-                        patch_v_num_p = int(proposed_version[2])
-                    except:
-                        return {'result': False, 'msg': 'Invalid version number.'}
 
                     # If the version array is empty, we use the start version of '0.0.0' to compare against
                     try:
-                        current_version = application['versions'][branch][component_name][-1]['version'].split('.')
+                         current_version = application["versions"][branch][component_name][-1]["version"]
                     except:
-                        current_version = '0.0.0'.split('.')
+                         current_version = '0.0.0'
 
-                    try:
-                        major_v_num_c = int(current_version[0])
-                        minor_v_num_c = int(current_version[1])
-                        patch_v_num_c = int(current_version[2])
-                    except:
-                        return {'result': False, 'msg': 'Server error: Saved version number is invalid.'}
+                    version_validator = validate_version(
+                        current_version=current_version, 
+                        proposed_version=proposed_version)
 
-                    if major_v_num_p > major_v_num_c:
-                        # Continue with file save
-                        pass
-                    elif major_v_num_p == major_v_num_c:
-                        if minor_v_num_p > minor_v_num_c:
-                            # Continue with file save
-                            pass
-                        elif minor_v_num_p == minor_v_num_c:
-                            if patch_v_num_p > patch_v_num_c:
-                                # Continue with file save
-                                pass
-                            else:
-                                # No need for the same/lower version to be uploaded
-                                return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
-                        else:
-                            return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
-                    else:
-                        return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
+                    if version_validator['result'] == False:
+                        return version_validator
 
                     #print("Current version: " + application['versions'][component_name][branch]['version'])
                     #print("Proposed version: " + form_data["version_number"])
@@ -96,7 +109,7 @@ def install_new_version(form_data, update_package):
                     # Name: ex. 1.2.0_changelog.txt
                     # Save to same folder as the update package
                     save_path = 'update_packages/'+application_name+'/'+branch + \
-                        '/'+component_name+'/' + form_data["version_number"]
+                        '/'+component_name+'/' + proposed_version
 
                     version_control = {}
 
@@ -124,7 +137,7 @@ def install_new_version(form_data, update_package):
                     # The file saving was successful
                     # Generate the hash and save it to the database
                     new_version = {
-                        'version': form_data["version_number"],
+                        'version': proposed_version,
                         'checksum': sha256sum(save_path+'.zip'),
                         'chainlink': form_data["is_chainlink"]
                     }
