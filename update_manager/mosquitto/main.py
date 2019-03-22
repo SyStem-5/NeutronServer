@@ -15,7 +15,7 @@ def clean_string(string):
     '''
     The returned string will contain only alpha-numeric characters including '_'
     '''
-    return ''.join(e for e in string.lower() if e.isalnum() or e == '_')
+    return ''.join(e for e in string if e.isalnum() or e == '_')
 
 
 def generate_hash(password, salt=''):
