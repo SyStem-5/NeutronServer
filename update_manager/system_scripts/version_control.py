@@ -2,9 +2,11 @@
 # pylint: disable=E1101
 import hashlib
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-from update_manager.models import NeutronApplication, VersionControl
+from update_manager.models import (NeutronApplication, UpdaterList,
+                                   VersionControl)
 
 
 def clean_string(data, ignore_underscore=False):
@@ -157,3 +159,80 @@ def install_new_version(form_data, update_package):
                 return {'result': False, 'msg': 'Branch does not exist.'}
 
     return {'result': False, 'msg': 'Could not find the application specified.'}
+
+
+def generate_update_manifest(request):
+    try:
+        neutron_user = clean_string(request["neutronuser"])
+        updater_username = request["username"]
+        asked_application = clean_string(request["application"])
+        asked_branch = request["branch"]
+        asked_components = request["components"].split(',')
+        asked_versions = request["versions"].split(',')
+    except (KeyError):
+        return {'result': False, 'msg': 'Unknown parameter.'}
+
+    if len(asked_components) != len(asked_versions):
+        return {'result': False, 'msg': 'Components & versions parameter length not matching.'}
+
+    try:
+        user = UpdaterList.objects.get(user=User.objects.get(username=neutron_user))
+    except (ObjectDoesNotExist):
+        return {'result': False, 'msg': 'Unknown user.'}
+
+    #print(user.updaters)
+
+    allowed_components = []
+    component_versions = []
+
+    # Check if the updater list is empty, if it is, return error
+    if user.updaters:
+        #print("found updater list")
+        if updater_username in user.updaters["updaters"]:
+            print("Updater is valid")
+
+            if asked_application in user.updaters["updaters"][updater_username]:
+                print("Application access granted")
+
+                if asked_branch in user.updaters["updaters"][updater_username][asked_application]:
+                    print("Branch access granted")
+
+                    # The updater has access to the application/branch, now we determine which updater is allowed and add them to the list
+                    for component in asked_components:
+                        if component in user.updaters["updaters"][updater_username][asked_application][asked_branch]:
+                            allowed_components.append(component)
+                            component_versions.append(asked_versions[asked_components.index(component)])
+
+                else:
+                    return {'result': False, 'msg': 'Branch access denied.'}
+            else:
+                return {'result': False, 'msg': 'Application access denied.'}
+        else:
+            return {'result': False, 'msg': 'Updater does not belong to the provided user.'}
+    else:
+        return {'result': False, 'msg': 'Updater does not belong to the provided user.'}
+
+    #print(allowed_components)
+    #print(component_versions)
+    #print(asked_components)
+    #print(asked_versions)
+
+    try:
+        version_control = VersionControl.objects.get(application=NeutronApplication.objects.get(name=asked_application))
+    except (ObjectDoesNotExist):
+        return {'result': False, 'msg': 'Unknown application.'}
+
+    manifest = {"manifest": {}}
+
+    for component in allowed_components:
+        try:
+            for version in version_control.versions[asked_branch][component]:
+                #pass
+                validator = validate_version(component_versions[allowed_components.index(component)], version["version"])
+                if validator["result"] == True and (version["chainlink"] or version["version"] == version_control.versions[asked_branch][component][-1]["version"]):
+                    manifest["manifest"].setdefault(component,[]).append(version)
+        except:
+            return {'result': False, 'msg': 'Server error: Could not locate version control data.'}
+        
+
+    return {'result': True, 'msg': manifest}
