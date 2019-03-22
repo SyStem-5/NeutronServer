@@ -34,7 +34,7 @@ def users(request):
 def version_control(request):
     #main.add_user('testuser', 'jahahaha')
     template = 'version_control/dashboard.html'
-    return render(request, template, {'version_control': VersionControl.objects.all()})
+    return render(request, template)
 
 
 @permission_required('superuser', login_url='login/')
@@ -42,7 +42,7 @@ def version_control_new(request):
     if request.method == 'GET':
         template = 'version_control/new_version.html'
 
-        return render(request, template, {'form': PublishNewVersionForm(), 'version_control': VersionControl.objects.all()})
+        return render(request, template, {'form': PublishNewVersionForm()})
     elif request.method == 'POST':
         form = PublishNewVersionForm(request.POST, request.FILES)
         # print(request.FILES)
