@@ -91,10 +91,10 @@ function populate_component_input() {
 }
 
 function update_version_number_field() {
-    selected_branch = $("#inputAppBranch").val().toLowerCase();
+    selected_branch = $("#inputAppBranch").val();
 
     if ($("#inputAppComponent").val() != null) {
-        selected_component = $("#inputAppComponent").val().toLowerCase();
+        selected_component = $("#inputAppComponent").val();
 
         try {
             version = selected_vc["versions"][selected_branch][selected_component]
