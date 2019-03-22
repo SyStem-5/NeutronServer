@@ -7,8 +7,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from update_manager.models import NeutronApplication, VersionControl
 
 
-def clean_string(data):
-    return ''.join(e for e in data.lower() if e.isalnum())
+def clean_string(data, ignore_underscore=False):
+    if ignore_underscore:
+        return ''.join(e for e in data.lower() if e.isalnum() or '_')
+    else:
+        return ''.join(e for e in data if e.isalnum())
 
 
 def sha256sum(filename):
@@ -87,8 +90,7 @@ def install_new_version(form_data, update_package):
                     #print("Current version: " + application['versions'][component_name][branch]['version'])
                     #print("Proposed version: " + form_data["version_number"])
 
-                    application_name = clean_string(
-                        str(NeutronApplication.objects.get(pk=application_id)))
+                    application_name = str(NeutronApplication.objects.get(pk=application_id))
 
                     # Version number is valid, save the file to the correct location
                     # Name: ex. 1.2.0_changelog.txt
