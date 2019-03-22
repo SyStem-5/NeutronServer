@@ -64,7 +64,7 @@ class NeutronApplication(models.Model):
         component_list = []
         for component in self.components['components']:
             component_list.append(
-                ''.join(e for e in component.lower() if e.isalnum()))
+                ''.join(e for e in component if e.isalnum()))
         return component_list
 
     def get_branches_clean(self):
@@ -74,14 +74,14 @@ class NeutronApplication(models.Model):
         branch_list = []
         for branch in self.branches['branches']:
             branch_list.append(
-                ''.join(e for e in branch.lower() if e.isalnum()))
+                ''.join(e for e in branch if e.isalnum()))
         return branch_list
 
     def get_name_clean(self):
         '''
         Returns alpha-numeric application name with no whitespace.
         '''
-        return ''.join(e for e in self.name.lower() if e.isalnum())
+        return ''.join(e for e in str(self.name) if e.isalnum())
     
     def __str__(self):
         return self.name
