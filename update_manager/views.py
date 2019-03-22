@@ -11,8 +11,8 @@ from NeutronServer.forms import PublishNewVersionForm
 from update_manager.decorators import mqtt_auth
 from update_manager.models import NeutronApplication, VersionControl
 from update_manager.mosquitto import main
-from update_manager.system_scripts.version_control import \
-    install_new_version
+from update_manager.system_scripts.version_control import (generate_update_manifest,
+                                                           install_new_version)
 
 
 # @login_required(redirect_field_name='', login_url='login/')
@@ -54,8 +54,8 @@ def version_control_new(request):
 
 @mqtt_auth
 def api_version_manifest(request):
-    print(request.GET)
-    return JsonResponse({"message": "Hiii!"})
+    #print(request.GET)
+    return JsonResponse(generate_update_manifest(request.GET))
 
 
 @permission_required('superuser', login_url='login/')
