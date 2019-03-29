@@ -9,7 +9,7 @@ $("#inputUpdateRecipe").on("change", function () {
     if ($(this).val() == "" || undefined) {
         $("#helptext_updaterecipe").html("Update recipe will be generated automatically.");
     } else {
-        $("#helptext_updaterecipe").html("The system will this update recipe instead of the automatically generated one.");
+        $("#helptext_updaterecipe").html("<b>The system will use this update recipe instead of the automatically generated one.</b>");
     }
 });
 
