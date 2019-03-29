@@ -22,6 +22,7 @@ def sha256sum(filename):
             h.update(mv[:n])
     return h.hexdigest()
 
+
 def validate_version(current_version, proposed_version):
     proposed_version = proposed_version.split('.')
 
