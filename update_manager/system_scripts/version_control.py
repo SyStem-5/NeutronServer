@@ -1,10 +1,14 @@
 # Disable annoying 'no member' error
 # pylint: disable=E1101
 import hashlib
+from os import mkdir
+from shutil import rmtree
+from zipfile import ZIP_DEFLATED, ZipFile
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
+from NeutronServer.settings import VERSION_CONTROL_ROOT
 from update_manager.models import (NeutronApplication, UpdaterList,
                                    VersionControl)
 
@@ -108,7 +112,7 @@ def install_new_version(form_data, update_package):
                     # Version number is valid, save the file to the correct location
                     # Name: ex. 1.2.0_changelog.txt
                     # Save to same folder as the update package
-                    save_path = 'update_packages/'+application_name+'/'+branch + \
+                    save_path = VERSION_CONTROL_ROOT+'/'+application_name+'/'+branch + \
                         '/'+component_name+'/' + proposed_version
 
                     version_control = {}
@@ -128,11 +132,25 @@ def install_new_version(form_data, update_package):
                         else:
                             # We saved the changelog, save the update package
                             try:
-                                with open(save_path + '.zip', 'wb+') as destination:
-                                    for chunk in update_package.chunks():
-                                        destination.write(chunk)
-                            except:
-                                return {'result': False, 'msg': 'Server error: Could not save update package.'}
+                                temp_loc=VERSION_CONTROL_ROOT+'/'+proposed_version+'-temp/'
+                                mkdir(path=temp_loc)
+                                with ZipFile(save_path + '.zip', 'w', compression=ZIP_DEFLATED) as zipfile:
+                                    with open(temp_loc + str(update_package), 'wb+') as destination2:
+                                        for chunk2 in update_package.chunks():
+                                            destination2.write(chunk2)
+                                    #zipfile.writestr(zinfo_or_arcname=save_path + '.zip', data=destination2)
+                                    zipfile.write(temp_loc + str(update_package), arcname=str(update_package))
+                            except FileExistsError:
+                                return {'result': False, 'msg': 'Server error: Temporary folder already exists. Try again.'}
+                            except FileNotFoundError:
+                                return {'result': False, 'msg': 'Server error: Temporary folder not found.'}
+                            finally:
+                                # Just so we don't trash the log with useless info
+                                try:
+                                    rmtree(temp_loc)
+                                except:
+                                    print("Could not clean-up update publish temporary folder.")
+                                
 
                     # The file saving was successful
                     # Generate the hash and save it to the database
