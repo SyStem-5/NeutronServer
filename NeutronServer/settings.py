@@ -205,5 +205,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
+# Temporary
+VERSION_CONTROL_PACKAGES = '/download/version_control/'
+VERSION_CONTROL_ROOT = os.path.join(BASE_DIR, 'update_packages')
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login'
