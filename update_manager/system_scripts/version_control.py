@@ -1,6 +1,6 @@
 # Disable annoying 'no member' error
 # pylint: disable=E1101
-import hashlib
+from hashlib import sha256
 from os import mkdir
 from shutil import rmtree
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -18,7 +18,7 @@ def clean_string(data):
 
 
 def sha256sum(filename):
-    h = hashlib.sha256()
+    h = sha256()
     b = bytearray(128*1024)
     mv = memoryview(b)
     with open(filename, 'rb', buffering=0) as f:
