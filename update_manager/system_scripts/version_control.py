@@ -9,11 +9,8 @@ from update_manager.models import (NeutronApplication, UpdaterList,
                                    VersionControl)
 
 
-def clean_string(data, ignore_underscore=False):
-    if ignore_underscore:
-        return ''.join(e for e in data.lower() if e.isalnum() or '_')
-    else:
-        return ''.join(e for e in data if e.isalnum())
+def clean_string(data):
+    return ''.join(e for e in data if e.isalnum())
 
 
 def sha256sum(filename):
