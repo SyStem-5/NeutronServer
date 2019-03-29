@@ -47,7 +47,7 @@ def version_control_new(request):
         form = PublishNewVersionForm(request.POST, request.FILES)
         # print(request.FILES)
         if form.is_valid():
-            return JsonResponse(install_new_version(form.cleaned_data, request.FILES['update_package']))
+            return JsonResponse(install_new_version(form.cleaned_data, request.FILES))
         else:
             return JsonResponse({'result': False, 'msg': str(form.errors)})
 

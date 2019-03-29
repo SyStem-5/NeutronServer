@@ -70,7 +70,7 @@ def validate_version(current_version, proposed_version):
     return {'result': True}
 
 
-def install_new_version(form_data, update_package):
+def install_new_version(form_data, update_files):
     version_control_table = list(VersionControl.objects.values())
     # print(version_control_table)
 
@@ -78,6 +78,7 @@ def install_new_version(form_data, update_package):
     application_id = int(form_data["application"])
     component_name = clean_string(form_data["component"])
     branch = clean_string(form_data["branch"])
+    update_package = update_files['update_package']
     try:
         proposed_version = str(form_data["version_number"])
     except:
