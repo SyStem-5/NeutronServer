@@ -139,6 +139,12 @@ def install_new_version(form_data, update_files):
                                     with open(temp_loc + str(update_package), 'wb+') as destination2:
                                         for chunk2 in update_package.chunks():
                                             destination2.write(chunk2)
+                                    if 'update_recipe' in update_files:
+                                        update_recipe = update_files['update_recipe']
+                                        with open(temp_loc + 'recipe.json', 'wb+') as destination2:
+                                            for chunk2 in update_recipe.chunks():
+                                                destination2.write(chunk2)
+                                        zipfile.write(temp_loc + 'recipe.json', arcname='recipe.json')
                                     #zipfile.writestr(zinfo_or_arcname=save_path + '.zip', data=destination2)
                                     zipfile.write(temp_loc + str(update_package), arcname=str(update_package))
                             except FileExistsError:

@@ -62,6 +62,14 @@ class PublishNewVersionForm(forms.Form):
         'style': 'height: 0%;',
         'accept': '.zip',
         'required': ''}))
+    update_recipe = forms.FileField(required=False,
+        validators=[validate_file_field],
+        widget=forms.FileInput({
+        'name': 'update_recipe',
+        'id': 'inputUpdateRecipe',
+        'class': 'form-control',
+        'style': 'height: 0%;',
+        'accept': '.json'}))
 
     is_push_update = forms.BooleanField(required=False,
                                         widget=forms.CheckboxInput({

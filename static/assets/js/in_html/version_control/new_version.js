@@ -5,6 +5,18 @@ var selected_app = {};
 var selected_vc = {};
 
 
+$("#inputUpdateRecipe").on("change", function () {
+    if ($(this).val() == "" || undefined) {
+        $("#helptext_updaterecipe").html("Update recipe will be generated automatically.");
+    } else {
+        $("#helptext_updaterecipe").html("The system will this update recipe instead of the automatically generated one.");
+    }
+});
+
+$("#clearUpdateRecipe").on("click", function () {
+    $("#inputUpdateRecipe").val("").trigger('change');
+});
+
 $("#inputApp").on("change", function () {
 
     for (const app in applications) {

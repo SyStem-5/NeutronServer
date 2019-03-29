@@ -60,6 +60,15 @@
                         <label for="inputUpdatePackage" class="col-form-label">Update Package</label>
                         {{ form.update_package }}
                     </div>
+                    <div class="form-group">
+                        <label for="inputUpdateRecipe" class="col-form-label">Update Recipe
+                            <button id="clearUpdateRecipe" type="button" class="btn btn-outline-primary btn-sm">Clear</button>
+                        </label>
+                        <p id="helptext_updaterecipe" class="text-muted m-b-5 font-13">
+                            Update recipe will be generated automatically.
+                        </p>
+                        {{ form.update_recipe }}
+                    </div>
                     <div class="form-group" 
                         title="If this update is marked as a chainlink, people upgrading from an old version to the latest one will have to download this version first.">
                         {{ form.is_chainlink }}
