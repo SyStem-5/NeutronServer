@@ -60,7 +60,7 @@ class PublishNewVersionForm(forms.Form):
         'id': 'inputUpdatePackage',
         'class': 'form-control',
         'style': 'height: 0%;',
-        'accept': '.zip',
+        'accept': '*',
         'required': ''}))
     update_recipe = forms.FileField(required=False,
         validators=[validate_file_field],
