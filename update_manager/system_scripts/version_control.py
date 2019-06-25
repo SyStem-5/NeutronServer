@@ -66,7 +66,7 @@ def validate_version(current_version, proposed_version):
             return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
     else:
         return {'result': False, 'msg': 'Version number has to be an increase from the current one.'}
-    
+
     return {'result': True}
 
 
@@ -99,7 +99,7 @@ def install_new_version(form_data, update_files):
                          current_version = '0.0.0'
 
                     version_validator = validate_version(
-                        current_version=current_version, 
+                        current_version=current_version,
                         proposed_version=proposed_version)
 
                     if version_validator['result'] == False:
@@ -124,45 +124,43 @@ def install_new_version(form_data, update_files):
                     except (ObjectDoesNotExist):
                         return {'result': False, 'msg': 'Server error: Could not find version control data for the selected app.'}
                     else:
-                        # If we get the version control, try to save the changelog
+                        # If we get the version control, start to zip the update files
                         try:
-                            with open(save_path + '_changelog.txt', 'w+') as destination:
-                                destination.write(form_data["changelog"])
-                        except:
-                            return {'result': False, 'msg': 'Server error: Could not save update changelog.'}
-                        else:
-                            # We saved the changelog, save the update package
-                            try:
-                                temp_loc=VERSION_CONTROL_ROOT+'/'+proposed_version+'-temp/'
-                                mkdir(path=temp_loc)
-                                with ZipFile(save_path + '.zip', 'w', compression=ZIP_DEFLATED) as zipfile:
-                                    with open(temp_loc + str(update_package), 'wb+') as destination2:
-                                        for chunk2 in update_package.chunks():
-                                            destination2.write(chunk2)
-                                    if 'update_recipe' in update_files:
-                                        update_recipe = update_files['update_recipe']
-                                        with open(temp_loc + 'recipe.json', 'wb+') as destination2:
-                                            for chunk2 in update_recipe.chunks():
-                                                destination2.write(chunk2)
-                                        zipfile.write(temp_loc + 'recipe.json', arcname='recipe.json')
-                                    #zipfile.writestr(zinfo_or_arcname=save_path + '.zip', data=destination2)
+                            temp_loc=VERSION_CONTROL_ROOT+'/'+proposed_version+'-temp/'
+                            mkdir(path=temp_loc)
+                            with ZipFile(save_path + '.zip', 'w', compression=ZIP_DEFLATED) as zipfile:
+
+                                # Zip the update files
+                                with open(temp_loc + str(update_package), 'wb+') as destination2:
+                                    for chunk2 in update_package.chunks():
+                                        destination2.write(chunk2)
                                     zipfile.write(temp_loc + str(update_package), arcname=str(update_package))
-                            except FileExistsError:
-                                return {'result': False, 'msg': 'Server error: Temporary folder already exists. Try again.'}
-                            except FileNotFoundError:
-                                return {'result': False, 'msg': 'Server error: Temporary folder not found.'}
-                            finally:
-                                # Just so we don't trash the log with useless info
-                                try:
-                                    rmtree(temp_loc)
-                                except:
-                                    print("Could not clean-up update publish temporary folder.")
-                                
+
+                                # Zip the update recipe
+                                if 'update_recipe' in update_files:
+                                    update_recipe = update_files['update_recipe']
+                                    with open(temp_loc + 'recipe.json', 'wb+') as destination2:
+                                        for chunk2 in update_recipe.chunks():
+                                            destination2.write(chunk2)
+                                    zipfile.write(temp_loc + 'recipe.json', arcname='recipe.json')
+
+                        except FileExistsError:
+                            return {'result': False, 'msg': 'Server error: Temporary folder already exists. Try again.'}
+                        except FileNotFoundError:
+                            return {'result': False, 'msg': 'Server error: Temporary folder not found.'}
+                        finally:
+                            # Remove the temporary folder for creating the zipfile
+                            try:
+                                rmtree(temp_loc)
+                            except:
+                                print("Could not clean-up update-zipping temporary folder.")
+
 
                     # The file saving was successful
                     # Generate the hash and save it to the database
                     new_version = {
                         'version': proposed_version,
+                        'changelog': form_data["changelog"],
                         'checksum': sha256sum(save_path+'.zip'),
                         'chainlink': form_data["is_chainlink"]
                     }
@@ -256,6 +254,6 @@ def generate_update_manifest(request):
                     manifest["manifest"].setdefault(component,[]).append(version)
         except:
             return {'result': False, 'msg': 'Server error: Could not locate version control data.'}
-        
+
 
     return {'result': True, 'msg': manifest}
