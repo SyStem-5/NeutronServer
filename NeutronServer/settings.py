@@ -16,7 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 secret_dir = os.getenv("SECRETS_LOCATION", "/run/secrets")
-use_secrets = os.path.isdir(str(secret_dir))
+use_secrets = os.path.isdir(secret_dir)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
