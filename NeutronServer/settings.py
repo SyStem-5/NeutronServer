@@ -15,7 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-secret_dir = os.getenv("SECRETS_LOCATION")
+secret_dir = os.getenv("SECRETS_LOCATION", "/run/secrets")
 use_secrets = os.path.isdir(str(secret_dir))
 
 # Quick-start development settings - unsuitable for production
