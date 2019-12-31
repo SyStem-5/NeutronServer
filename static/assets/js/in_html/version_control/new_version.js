@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 var applications = {};
 var version_control = {};
 
@@ -14,7 +15,7 @@ $("#inputUpdateRecipe").on("change", function () {
 });
 
 $("#clearUpdateRecipe").on("click", function () {
-    $("#inputUpdateRecipe").val("").trigger('change');
+    $("#inputUpdateRecipe").val("").trigger("change");
 });
 
 $("#inputApp").on("change", function () {
@@ -109,14 +110,12 @@ function update_version_number_field() {
         selected_component = $("#inputAppComponent").val();
 
         try {
-            version = selected_vc["versions"][selected_branch][selected_component]
-                [selected_vc["versions"][selected_branch][selected_component].length-1]
-                ["version"];
+            version = selected_vc["versions"][selected_branch][selected_component] [selected_vc["versions"][selected_branch][selected_component].length-1] ["version"];
         } catch (error) {
             console.log("Couldn't find any version number for this component. Using '0.0.0'.");
-            version = "0.0.0"
+            version = "0.0.0";
         }
-        
+
 
         $("#inputVersionNumber").val(version);
     }
@@ -140,7 +139,7 @@ $("#infoForm").submit(function (e) {
         // Form data
         data: new FormData($("form#infoForm")[0]),
 
-        success: function (data, textStatus, jqXHR) {
+        success: function (data) {
             if (data["result"] === true) {
                 $("#responseMessage").css("color", "green");
                 $("#responseMessage").html(data["msg"]);

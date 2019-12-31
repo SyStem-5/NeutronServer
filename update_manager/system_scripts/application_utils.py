@@ -6,7 +6,7 @@ version_control_dir="update_packages/"
 
 def setup_new_application(name, branches, components):
     base_dir = version_control_dir+name
-    
+
     try:
         makedirs(base_dir)
     except FileExistsError:
@@ -33,6 +33,7 @@ def setup_new_application(name, branches, components):
                 makedirs(base_dir+"/"+branch+"/"+component)
             except FileExistsError:
                 print("Could not create 'download' branch folders for the application, they already exist. Branch:" + branch)
+
 
 def cleanup_application_postdelete(name):
     try:

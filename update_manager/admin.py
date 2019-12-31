@@ -11,7 +11,8 @@ class UpdaterListAdminUI(admin.ModelAdmin):
     list_display = ('user', 'get_updaters')
 
     def get_updaters(self, object):
-        print(object.updaters)
+        print("DISPLAYING UPDATERS")
+        #print(object.updaters)
 
 
 @admin.register(NeutronApplication)

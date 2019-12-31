@@ -83,3 +83,40 @@ class PublishNewVersionForm(forms.Form):
                                             'id': 'inputIsChainLink',
                                             'type': 'checkbox'
                                         }))
+
+class AccoutManagementForm(UserCreationForm):
+
+    firstname = forms.CharField(max_length=254,
+                            widget=forms.TextInput({
+                                'class': 'form-control',
+                                'placeholder': 'First name'}))
+
+    lastname = forms.CharField(max_length=254,
+                            widget=forms.TextInput({
+                                'class': 'form-control',
+                                'placeholder': 'Last name'}))
+
+
+    username = forms.CharField(max_length=254,
+                               widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'User name'}))
+
+    email = forms.CharField(max_length=254,
+                               widget=forms.EmailInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'E-mail address'}))
+
+    password1 = forms.CharField(label=ugettext_lazy("Password"),
+                               widget=forms.PasswordInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Password'}))
+
+    password2 = forms.CharField(label=ugettext_lazy("Confirm Password"),
+                               widget=forms.PasswordInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'Confirm Password'}))
+
+    class Meta:
+        model = User
+        fields = ('firstname', 'lastname', 'username', 'email', 'password1', 'password2',)

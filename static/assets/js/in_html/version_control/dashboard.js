@@ -1,11 +1,13 @@
+/* eslint-disable no-undef */
+
 let applications = {};
 let version_control_data = {};
 
-const apptable = $('#app_table');
+const apptable = $("#app_table");
 
 function generate_accordion(app_id) {
     const col_span = $("<td colspan='3' nowrap>");
-    const accordion_div = $("<div class='collapse'>").attr('id', `accordion${app_id}`);
+    const accordion_div = $("<div class='collapse'>").attr("id", `accordion${app_id}`);
     const grid_container = $("<div class='grid-container' style='grid-template-columns:auto auto auto; display: grid; grid-gap: 1em;'>");
 
     accordion_div.append(grid_container);
@@ -17,8 +19,8 @@ function populate_applist() {
     const vc_data_copy = jQuery.extend(true, {}, version_control_data);
 
     if (jQuery.isEmptyObject(applications)) {
-        console.debug('Server returned empty application list.');
-        const info = $('<br><li nowrap>No registered applications found.</li><br>');
+        console.debug("Server returned empty application list.");
+        const info = $("<br><li nowrap>No registered applications found.</li><br>");
         apptable.append(info);
         return;
     }
@@ -35,16 +37,16 @@ function populate_applist() {
         });
 
         const table_row = $("<tr data-toggle='collapse' class='clickable'></tr>")
-            .attr('data-target', `#accordion${applications[app].id}`);
-        const row_id = $('<td></td>').text(counter);
-        const app_name = $('<td></td>').text(applications[app].name);
-        const last_updated = $('<td></td>').text(app_ver_data.last_updated);
+            .attr("data-target", `#accordion${applications[app].id}`);
+        const row_id = $("<td></td>").text(counter);
+        const app_name = $("<td></td>").text(applications[app].name);
+        const last_updated = $("<td></td>").text(app_ver_data.last_updated);
 
         // var btn = $("<td style='text-align:right' data-toggle='collapse' data-target=
         // '#accordion25' class='clickable'><button class='btn mdi mdi mdi-details'></button></td>");
         table_row.append(row_id, app_name, last_updated /* btn */);
 
-        const table_row_accordion = $('<tr></tr>');
+        const table_row_accordion = $("<tr></tr>");
         const accordion = generate_accordion(applications[app].id);
 
         Object.keys(app_ver_data.versions).forEach((branch) => {
@@ -63,7 +65,7 @@ function populate_applist() {
             });
 
             new_grid_item.append(branch_label, component_label);
-            accordion.find('.grid-container').append(new_grid_item);
+            accordion.find(".grid-container").append(new_grid_item);
 
             table_row_accordion.append(accordion);
 
@@ -73,13 +75,21 @@ function populate_applist() {
     });
 }
 
-$.getJSON('get/all')
+$.getJSON("get/data")
     .done((json) => {
-        applications = json.applications_data;
         version_control_data = json.version_control;
+        console.debug("Successfully fetched version data.");
 
-        console.debug('Successfuly fetched json.');
-        populate_applist();
+        $.getJSON("get/apps")
+            .done((json) => {
+                applications = json.applications_data;
+
+                console.debug("Successfully fetched application data.");
+                populate_applist();
+            })
+            .fail((jqxhr, textStatus, error) => {
+                console.error(error);
+            });
     })
     .fail((jqxhr, textStatus, error) => {
         console.error(error);

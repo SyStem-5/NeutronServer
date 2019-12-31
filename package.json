@@ -1,0 +1,23 @@
+{
+  "name": "neutronserver",
+  "version": "1.0.0",
+  "description": "Neutron server is used for managing application updates (push or normal) and other remote managing operations.",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "eslint": "^6.8.0",
+    "jquery": "^3.4.1"
+  }
+}

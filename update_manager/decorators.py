@@ -7,7 +7,7 @@ from functools import wraps
 from django.http import JsonResponse
 
 from update_manager.models import MQTTUsers
-from update_manager.mosquitto.main import generate_hash, clean_string
+from update_manager.system_scripts.mosquitto.main import generate_hash, clean_string
 
 
 def mqtt_auth(function):

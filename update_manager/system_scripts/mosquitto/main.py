@@ -4,23 +4,30 @@
 import base64
 import hashlib
 import os
+import string
+from random import choice
 
 from update_manager.models import MQTTACL, MQTTUsers
 
 pbkdf2_iterations = 100000
 digest_alg = 'sha256'
 
+generated_password_len = 15
 
-def clean_string(string):
+
+def generate_random(length: int = generated_password_len) -> str:
+    return ''.join([choice(string.ascii_letters + string.digits + '_') for i in range(length)])
+
+
+def clean_string(string: str):
     '''
     The returned string will contain only alpha-numeric characters including '_'
     '''
     return ''.join(e for e in string if e.isalnum() or e == '_')
 
 
-def generate_hash(password, salt=''):
-
-    if not salt:
+def generate_hash(password: str, salt: str = "") -> str:
+    if salt == "":
         salt = base64.b64encode(os.urandom(20))
     else:
         salt = base64.b64encode(salt)
@@ -38,13 +45,21 @@ def generate_hash(password, salt=''):
         salt.decode("utf-8"),
         base64.b64encode(pbkdf2_hash).decode("utf-8")
     )
+
     return complete_hash
 
 
-def add_user(username, password, isSuperuser=0):
+def add_user(username: str = "", password: str = "", isSuperuser: bool = False) -> (str, str):
+    """Returns the username and password used, respectively."""
 
     if not isinstance(isSuperuser, int):
         return
+
+    if len(username) == 0:
+        username = generate_random(10)
+
+    if len(password) == 0:
+        password = generate_random()
 
     complete_hash = generate_hash(password)
 
@@ -53,20 +68,25 @@ def add_user(username, password, isSuperuser=0):
     MQTTUsers.objects.create(
         username=clean_username,
         password=complete_hash,
-        superuser=isSuperuser
+        superuser=1 if isSuperuser else 0
     ).save()
 
+    return (username, password)
 
-def remove_user(username):
+
+def remove_user(username: str):
     MQTTUsers.objects.filter(username=username).delete()
 
 
-def add_acl(username, topic, permissions=5):
+def add_acl(username: str, topic: str, permissions: int = 5):
     '''
-    Permissions: 2 - write, 5 - read, 7 - read/write
+    Permissions:
+        1 -> read-only
+        2 -> write-only
+        3 -> read/write
     '''
     pass
 
 
-def remove_acl(username):
+def remove_acl(username: str):
     pass

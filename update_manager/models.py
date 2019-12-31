@@ -20,6 +20,7 @@ class UpdaterList(models.Model):
         verbose_name = 'user updater'
         verbose_name_plural = 'User updaters'
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #{"updaters": {"<MQTT_UPDATER_USERNAME>": {"<APP_NAME>": {"<BRANCH>": ["<COMPONENT>"]}}}}
     updaters = JSONField(default=dict)
 
     def __str__(self):
@@ -82,7 +83,7 @@ class NeutronApplication(models.Model):
         Returns alpha-numeric application name with no whitespace.
         '''
         return ''.join(e for e in str(self.name) if e.isalnum())
-    
+
     def __str__(self):
         return self.name
 
@@ -90,8 +91,8 @@ class NeutronApplication(models.Model):
 @receiver(post_save, sender=NeutronApplication)
 def create_application_setup(sender, instance, **kwargs):
     setup_new_application(
-        instance.get_name_clean(), 
-        instance.get_branches_clean(), 
+        instance.get_name_clean(),
+        instance.get_branches_clean(),
         instance.get_components_clean()
     )
 
@@ -147,5 +148,10 @@ class MQTTACL(models.Model):
     username = models.CharField(max_length=150)
     topic = models.CharField(max_length=100)
 
-    # 2 write, 5 read, 7 read/write
+    '''
+    Permissions:
+        1 -> read-only
+        2 -> write-only
+        3 -> read/write
+    '''
     rw = models.IntegerField(null=False, default=5)

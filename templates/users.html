@@ -2,7 +2,51 @@
 {% block title %}Users{% endblock %}
 
 {% block contents %}
-{% load staticfiles %}
+{% load static %}
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group pull-right m-t-20">
+                <button type="button" class="btn btn-custom dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="false"> </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="/users/add" class="dropdown-item">Add user</a>
+                </div>
+            </div>
+            <h4 class="page-title">Registered users</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-box">
+                <!-- <h4 class="m-t-0 header-title">Form row</h4>
+                <p class="text-muted m-b-30 font-13">
+                    You may also swap <code class="highlighter-rouge">.row</code> for <code class="highlighter-rouge">.form-row</code>, a variation of our standard grid row that overrides the default column gutters for tighter and more compact layouts.
+                </p> -->
+
+                <div class="table-responsive">
+                    <table class="tablesaw table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First - Last name</th>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Registered Updaters</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usertable"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id = "csrf_token">{% csrf_token %}</div>
+
+<script src="{% static 'assets/js/in_html/users/dashboard.js' %}"></script>
 
 {% endblock %}

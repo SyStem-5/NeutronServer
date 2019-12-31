@@ -2,3 +2,4 @@
 /.vscode/settings.json
 /.vscode/.ropeproject
 /update_packages
+node_modules
